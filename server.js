@@ -22,7 +22,6 @@ module.exports = {
     getAccountAndPassword: () => ({ username, newpassword, account, password}),
 };
 
-
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
 module.exports = eventEmitter;
@@ -30,7 +29,7 @@ module.exports = eventEmitter;
 const commands = [
     {
         name: 'sudo',
-        description: 'makes an account with sudo (only admin use)',
+        description: 'Makes an account with sudo (only admin use)',
         options: [
             {
                 name: 'account',                
@@ -55,7 +54,7 @@ const commands = [
     },
     {
         name: 'nonsudo',
-        description: 'makes your account on the vm',
+        description: 'Makes an account on the vm',
         options: [
             {
                 name: 'account',
@@ -71,7 +70,43 @@ const commands = [
             },
         ],
     },
-
+/*
+    {
+        name: 'container',
+        description: 'Creates a container in proxmox',
+        options: [
+            {
+                name: 'containerName',
+                type: 3, 
+                description: 'The name of your container',
+                required: true,
+            },
+            {
+                name: 'distro',
+                type: 3, 
+                description: 'The distro that this container will use. Default is Debian',
+                required: false,
+                choices: {
+                    name: 'debian',
+                    name: 'ubuntu',
+                    name: 'archlinux',
+                },
+            },
+            {
+                name: 'password',
+                type: 3, 
+                description: 'The container\'s root password',
+                required: true,
+            },
+            {
+                name: 'ssh key',
+                type: 3, 
+                description: 'The container\'s ssh PUBLIC key. DO NOT USE YOUR PRIVATE KEY PLEASE!',
+                required: false,
+            },
+        ],
+    },
+*/
     {
         name: 'chngpasswd',
         description: 'Changes your password',
@@ -157,10 +192,11 @@ function writeUserIds(userIds) {
 
 client.on('interactionCreate', async interaction => {
     if (interaction.isCommand()) {
+        process.env.CONTAINER = interaction.options.getString('container');
         process.env.ACCOUNT = interaction.options.getString('account');
         process.env.PASSWORD = interaction.options.getString('password');
         console.log(account);
-        eventEmitter.emit('interactionCreated', { account, password,});
+        eventEmitter.emit('interactionCreated', { container, account, password,});
         console.log('Emitting interactionCreated event');
         if (interaction.commandName === 'sudo') {
             const requiredRoleId = process.env.ROLE_ID;

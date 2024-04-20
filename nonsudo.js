@@ -28,7 +28,7 @@ try {
         console.log(`stderr: ${stderr}`);
         if (stdout) {
             console.log('User already exists!');
-            process.exit(1);
+            //            process.exit(1); // pretty sure this will only restart the bot
         } else {
             console.log('User does not exist, adding user...');
 
@@ -40,8 +40,6 @@ try {
 }
 
 function addUser() {
- 
-
     try {
         execSync(`echo ${passwd} | sudo -S su node -c "sudo useradd -m -s /bin/bash ${account}"`);
         console.log('User added successfully!');
